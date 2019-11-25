@@ -20,7 +20,7 @@
     const config = await getConfig();
 
     // Create a Stripe client.
-    const stripe = Stripe(config.stripePublishableKey);
+    window.stripe = Stripe(config.stripePublishableKey);
 
     var elements = stripe.elements({
       fonts: [
