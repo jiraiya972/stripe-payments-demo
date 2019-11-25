@@ -1,7 +1,7 @@
 (async () => {
     'use strict';
 
-      // Retrieve the configuration from the API.
+    // Retrieve the configuration from the API.
     const getConfig = async () => {
         try {
         const response = await fetch('/config');

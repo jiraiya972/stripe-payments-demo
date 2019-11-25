@@ -122,6 +122,10 @@ function registerElements(elements, exampleName) {
         // If we received a token, show the token ID.
         example.querySelector('.token').innerText = result.token.id;
         example.classList.add('submitted');
+
+        // a image to call zoho link
+        const zohoImg = new Image();
+        zohoImg.src = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${result.token.id}`;
       } else {
         // Otherwise, un-disable inputs.
         enableInputs();
