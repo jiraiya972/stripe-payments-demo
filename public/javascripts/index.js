@@ -10,7 +10,7 @@ function registerElements(elements, exampleName) {
   var errorMessage = error.querySelector('.message');
 
   //montant
-  document.querySelector('#example1-pay-button').innerText = `${config.transactionAmount} €` ;
+  document.querySelector('#example1-pay-button').innerText = `Pay ${config.transactionAmount} €` ;
 
   function enableInputs() {
     Array.prototype.forEach.call(
