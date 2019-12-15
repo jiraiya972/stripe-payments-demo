@@ -9,6 +9,9 @@ function registerElements(elements, exampleName) {
   var error = form.querySelector('.error');
   var errorMessage = error.querySelector('.message');
 
+  //montant
+  document.querySelector('#example1-pay-button').innerText = `${config.transactionAmount} €` ;
+
   function enableInputs() {
     Array.prototype.forEach.call(
       form.querySelectorAll(
@@ -72,7 +75,7 @@ function registerElements(elements, exampleName) {
   });
 
   // Listen on the form's 'submit' handler...
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     // Trigger HTML5 validation UI on the form if any of the inputs fail
@@ -99,10 +102,13 @@ function registerElements(elements, exampleName) {
 
     // Gather additional customer data we may have collected in our form.
     var name = form.querySelector('#' + exampleName + '-name');
+    var phone = form.querySelector('#' + exampleName + '-phone');
+    var email = form.querySelector('#' + exampleName + '-email');
     var address1 = form.querySelector('#' + exampleName + '-address');
     var city = form.querySelector('#' + exampleName + '-city');
     var state = form.querySelector('#' + exampleName + '-state');
     var zip = form.querySelector('#' + exampleName + '-zip');
+    /*
     var additionalData = {
       name: name ? name.value : undefined,
       address_line1: address1 ? address1.value : undefined,
@@ -110,27 +116,65 @@ function registerElements(elements, exampleName) {
       address_state: state ? state.value : undefined,
       address_zip: zip ? zip.value : undefined,
     };
-
+    */
+    const billing_details = {
+      "address": {
+        "city": city ? city.value : undefined,
+        "country": null,
+        "line1": address1 ? address1.value : undefined,
+        "line2": null,
+        "postal_code": zip ? zip.value : undefined,
+        "state": state ? state.value : undefined,
+      },
+      "email": email ? email.value : undefined,
+      "name": name ? name.value : undefined,
+      "phone": phone ? phone.value : undefined,
+    }
     // Use Stripe.js to create a token. We only need to pass in one Element
     // from the Element group in order to create a token. We can also pass
     // in the additional customer data we collected in our form.
+    /*
+    console.log(elements);
     stripe.createToken(elements[0], additionalData).then(function(result) {
       // Stop loading!
       example.classList.remove('submitting');
 
       if (result.token) {
+        console.log(result);
         // If we received a token, show the token ID.
         example.querySelector('.token').innerText = result.token.id;
         example.classList.add('submitted');
 
         // a image to call zoho link
-        const zohoImg = new Image();
-        zohoImg.src = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${result.token.id}`;
+        // tid = transactionId
+        // const zohoImg = new Image();
+        // zohoImg.src = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${result.token.id}&tid=${window.config.transactionId}`;
+        const zapierWebHook = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${result.token.id}&tid=${window.config.transactionId}`;
+        fetch(zapierWebHook,{mode: 'cors'});
+
       } else {
         // Otherwise, un-disable inputs.
         enableInputs();
       }
     });
+    */
+
+    const {paymentMethod} = await stripe.createPaymentMethod({
+      type: 'card',
+      card: elements[0],
+      billing_details,
+    });
+    example.classList.remove('submitting');
+
+    if (paymentMethod.id) {
+      // If we received a token, show the token ID.
+      example.querySelector('.token').innerText = paymentMethod.id;
+      example.classList.add('submitted');
+      const zapierWebHook = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${paymentMethod.id}&tid=${window.config.transactionId}`;
+      fetch(zapierWebHook,{mode: 'cors'});
+    }
+
+
   });
 
   resetButton.addEventListener('click', function(e) {
