@@ -9,9 +9,6 @@ function registerElements(elements, exampleName) {
   var error = form.querySelector('.error');
   var errorMessage = error.querySelector('.message');
 
-  //montant
-  document.querySelector('#example1-pay-button').innerText = `Pay ${config.transactionAmount} €` ;
-
   function enableInputs() {
     Array.prototype.forEach.call(
       form.querySelectorAll(
@@ -108,15 +105,7 @@ function registerElements(elements, exampleName) {
     var city = form.querySelector('#' + exampleName + '-city');
     var state = form.querySelector('#' + exampleName + '-state');
     var zip = form.querySelector('#' + exampleName + '-zip');
-    /*
-    var additionalData = {
-      name: name ? name.value : undefined,
-      address_line1: address1 ? address1.value : undefined,
-      address_city: city ? city.value : undefined,
-      address_state: state ? state.value : undefined,
-      address_zip: zip ? zip.value : undefined,
-    };
-    */
+
     const billing_details = {
       "address": {
         "city": city ? city.value : undefined,
@@ -130,34 +119,6 @@ function registerElements(elements, exampleName) {
       "name": name ? name.value : undefined,
       "phone": phone ? phone.value : undefined,
     }
-    // Use Stripe.js to create a token. We only need to pass in one Element
-    // from the Element group in order to create a token. We can also pass
-    // in the additional customer data we collected in our form.
-    /*
-    console.log(elements);
-    stripe.createToken(elements[0], additionalData).then(function(result) {
-      // Stop loading!
-      example.classList.remove('submitting');
-
-      if (result.token) {
-        console.log(result);
-        // If we received a token, show the token ID.
-        example.querySelector('.token').innerText = result.token.id;
-        example.classList.add('submitted');
-
-        // a image to call zoho link
-        // tid = transactionId
-        // const zohoImg = new Image();
-        // zohoImg.src = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${result.token.id}&tid=${window.config.transactionId}`;
-        const zapierWebHook = `https://hooks.zapier.com/hooks/catch/467592/o63zzw4/?token=${result.token.id}&tid=${window.config.transactionId}`;
-        fetch(zapierWebHook,{mode: 'cors'});
-
-      } else {
-        // Otherwise, un-disable inputs.
-        enableInputs();
-      }
-    });
-    */
 
     const {paymentMethod} = await stripe.createPaymentMethod({
       type: 'card',
